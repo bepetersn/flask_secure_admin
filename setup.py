@@ -13,7 +13,7 @@ from setuptools import find_packages, setup, Command as UploadCommand
 
 # Package meta-data.
 NAME = 'flask_secure_admin'
-DESCRIPTION = 'A bundling of flask-security and flask-admin with a bit of integration'
+DESCRIPTION = 'A bundling of flask-security and flask-admin with a bit of integration.'
 URL = 'https://github.com/me/myproject'
 EMAIL = 'bepetersondev@gmail.com'
 AUTHOR = 'Brian Peterson'
@@ -22,7 +22,7 @@ VERSION = '0.1.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    # 'requests', 'maya', 'records',
+    'flask', 'flask_admin', 'flask_security', 'sqlalchemy', 'sqlsoup'
 ]
 
 # What packages are optional?
