@@ -1,0 +1,8 @@
+{% extends 'admin/base.html' %}
+
+{% block main_menu %}
+ <ul class="nav navbar-nav">
+   {{ layout.menu() }}
+   <li><a href="/logout">Logout</a></li>
+ </ul>
+{% endblock %}
