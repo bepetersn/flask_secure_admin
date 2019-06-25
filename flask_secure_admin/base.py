@@ -1,12 +1,13 @@
 
-import os
+import os, inspect
 from flask import Flask, request, url_for, g, abort, Blueprint
 from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, AdminIndexView, expose
 from flask_security import Security, login_required
-from secure_model_view import SecureModelView
-from security_sqlsoup_user_datastore import SQLSoupUserDataStore
-from str_representation import override___name___on_sqlsoup_model
+from .secure_model_view import SecureModelView
+from .security_sqlsoup_user_datastore import SQLSoupUserDataStore
+from .str_representation import override___name___on_sqlsoup_model
+from .templates import load_master_template
 
 # Inspired by:
 # https://flask-admin.readthedocs.io/en/latest/introduction/#using-flask-security
@@ -61,6 +62,7 @@ class SecureAdminBlueprint(Blueprint):
                 h=admin_helpers,
                 get_url=url_for
             )
+        load_master_template(app)
 
     def add_admin(self, app, db, name, models):
         # Add an admin at the /admin route,
