@@ -30,23 +30,25 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
         return result
 
     def get_user(self, identifier):
+        user = SQLAlchemyUserDatastore.get_user(self, identifier)
+        if user is None: return None
         return self.add_mixin(
-            SQLAlchemyUserDatastore.get_user(self, identifier),
-            SuperUserMixin
+            user, SuperUserMixin
         )
 
     def find_user(self, **kwargs):
+        user = SQLAlchemyUserDatastore.find_user(self, **kwargs)
+        if user is None: return None
         return self.add_mixin(
-            SQLAlchemyUserDatastore.find_user(self, **kwargs),
-            SuperUserMixin
+            user, SuperUserMixin
         )
 
     def find_role(self, role):
+        user = SQLAlchemyUserDatastore.find_user(self, role)
+        if user is None: return None
         return self.add_mixin(
-            SQLAlchemyUserDatastore.find_user(self, role),
-            RoleMixin
+            user, RoleMixin
         )
-
 
     @staticmethod
     def _extend_instance(obj, cls):
@@ -54,3 +56,4 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
         base_cls = obj.__class__
         base_cls_name = obj.__class__.__name__
         obj.__class__ = type(base_cls_name, (base_cls, cls), {})
+

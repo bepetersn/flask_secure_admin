@@ -27,7 +27,7 @@ class SecureAdminBlueprint(Blueprint):
         table exists. SQLSoup reference to this database should
         be set on app, as explained in `register`. """
 
-    def __init__(self, name=None, models=[]):
+    def __init__(self, name=None, models=None):
         self.name = name
         self.models = models
         super(SecureAdminBlueprint, self).__init__(
@@ -38,7 +38,7 @@ class SecureAdminBlueprint(Blueprint):
             We could easily support a regular SQLAlchemy db as well, but
             this is all we have for now. """
 
-        if not all([self.name, self.models]):
+        if self.name is None or self.models is None:
             assert False, "Set a name and models value before registering"
 
         # Secret key must be set in the environment.

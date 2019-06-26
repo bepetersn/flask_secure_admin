@@ -1,2 +1,2 @@
 
-from .base import SecureAdminBlueprint
+from .blueprint import SecureAdminBlueprint
