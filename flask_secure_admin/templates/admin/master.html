@@ -3,10 +3,17 @@
 {% block main_menu %}
   <ul class="nav navbar-nav">
     {% block inner_nav %}
-    {{ layout.menu() }}
-    {% if current_user.is_authenticated %}
-      <li><a href="/logout">Logout</a></li>
-    {% endif %}
+
+    {% block default_layout %}
+      {{ layout.menu() }}
+    {% endblock %}
+
+    {% block logout %}
+      {% if current_user.is_authenticated %}
+        <li><a href="/logout">Logout</a></li>
+      {% endif %}
+    {% endblock %}
+
     {% endblock %}
   </ul>
 {% endblock %}
