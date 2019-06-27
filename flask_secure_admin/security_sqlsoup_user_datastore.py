@@ -1,14 +1,19 @@
 
-from flask import g
+# from flask import g
+from funcy import collecting
 from flask_security import SQLAlchemyUserDatastore, RoleMixin, UserMixin
 
+def _wrap_user(user):
+    if user is None: return None
+    user = _extend_instance(user, UserMixin)
+    return user
 
-class SuperUserMixin(UserMixin):
-    """ I don't have a need for less privileged users
-        than superusers to be logged in. """
-    @property
-    def roles(self):
-        return g.roles
+def _extend_instance(obj, cls):
+    """Apply mixins to a class instance after creation """
+    base_cls = obj.__class__
+    base_cls_name = obj.__class__.__name__
+    obj.__class__ = type(base_cls_name, (base_cls, cls), {})
+    return obj
 
 
 class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
@@ -17,6 +22,8 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
         # You can query directly on the model with sqlsoup
         user_model.query = user_model
         role_model.query = role_model
+        # define relationships between these models
+        user_model.relate('roles', role_model, secondary=db.users_roles._table)
         SQLAlchemyUserDatastore.__init__(self, db, user_model, role_model)
 
     def put(self, model):
@@ -25,35 +32,18 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
             self.db.session.add(model)
         return model
 
-    def add_mixin(self, result, mixin_cls):
-        self._extend_instance(result, mixin_cls)
-        return result
-
     def get_user(self, identifier):
-        user = SQLAlchemyUserDatastore.get_user(self, identifier)
-        if user is None: return None
-        return self.add_mixin(
-            user, SuperUserMixin
+        return _wrap_user(
+            SQLAlchemyUserDatastore.get_user(self, identifier)
         )
 
     def find_user(self, **kwargs):
-        user = SQLAlchemyUserDatastore.find_user(self, **kwargs)
-        if user is None: return None
-        return self.add_mixin(
-            user, SuperUserMixin
+        return _wrap_user(
+            SQLAlchemyUserDatastore.find_user(self, **kwargs)
         )
 
     def find_role(self, role):
-        user = SQLAlchemyUserDatastore.find_user(self, role)
-        if user is None: return None
-        return self.add_mixin(
-            user, RoleMixin
+        return _extend_instance(
+            SQLAlchemyUserDatastore.find_user(self, role),
+            RoleMixin
         )
-
-    @staticmethod
-    def _extend_instance(obj, cls):
-        """Apply mixins to a class instance after creation """
-        base_cls = obj.__class__
-        base_cls_name = obj.__class__.__name__
-        obj.__class__ = type(base_cls_name, (base_cls, cls), {})
-

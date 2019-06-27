@@ -30,6 +30,7 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 CREATE TABLE public.users_roles (
+    id integer NOT NULL,
     user_id integer,
     role_id integer
 );
@@ -54,6 +55,8 @@ ALTER TABLE ONLY public.users_roles
     ADD CONSTRAINT users_roles_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id);
 ALTER TABLE ONLY public.users_roles
     ADD CONSTRAINT users_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+ALTER TABLE ONLY public.users_roles
+    ADD CONSTRAINT users_roles_pkey PRIMARY KEY (id);
 
 insert into users values (1, 'admin@example.com', '$pbkdf2-sha512$25000$4dw7h5DyPmcsZYyx1to7Rw$Riy7WwlBQJvG3gABgVVue61uRhQMyFZ8m8g7U/ZFPtvsgu6HtmbfLoUtN95Up98BbNZjFj6c57o7LHvQHc47iQ', true, now());
 insert into roles values (1, 'superuser', 'someone who can do anything');

@@ -1,6 +1,6 @@
 
 import os, inspect
-from flask import Flask, request, url_for, g, abort, Blueprint
+from flask import Flask, request, url_for, abort, Blueprint
 from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, AdminIndexView, expose
 from flask_security import Security, login_required
