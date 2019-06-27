@@ -56,11 +56,11 @@ class SecureAdminBlueprint(Blueprint):
         self.security = self.add_security(app, app.db)
 
         # Add stuff to flask-security templates that is needed by flask-admin
-        @security.context_processor
+        @self.security.context_processor
         def security_context_processor():
             return dict(
-                admin_base_template=admin.base_template,
-                admin_view=admin.index_view,
+                admin_base_template=self.admin.base_template,
+                admin_view=self.admin.index_view,
                 h=admin_helpers,
                 get_url=url_for
             )
