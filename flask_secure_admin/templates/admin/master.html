@@ -4,7 +4,9 @@
   <ul class="nav navbar-nav">
     {% block inner_nav %}
     {{ layout.menu() }}
-    <li><a href="/logout">Logout</a></li>
+    {% if current_user.is_authenticated %}
+      <li><a href="/logout">Logout</a></li>
+    {% endif %}
     {% endblock %}
   </ul>
 {% endblock %}
