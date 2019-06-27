@@ -30,6 +30,8 @@ class SecureAdminBlueprint(Blueprint):
     def __init__(self, name=None, models=None):
         self.name = name
         self.models = models
+        self.admin = None
+        self.security = None
         super(SecureAdminBlueprint, self).__init__(
             self.name, __name__, template_folder='templates')
 
@@ -50,8 +52,8 @@ class SecureAdminBlueprint(Blueprint):
         app.config['SECURITY_PASSWORD_SALT'] = os.environ['SECURITY_PASSWORD_SALT']
         app.config['SECURITY_REGISTERABLE'] = False
 
-        admin = self.add_admin(app, app.db, self.name, self.models)
-        security = self.add_security(app, app.db)
+        self.admin = self.add_admin(app, app.db, self.name, self.models)
+        self.security = self.add_security(app, app.db)
 
         # Add stuff to flask-security templates that is needed by flask-admin
         @security.context_processor
