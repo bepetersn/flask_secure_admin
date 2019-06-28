@@ -55,6 +55,13 @@ class SecureAdminBlueprint(Blueprint):
         self.admin = self.add_admin(app, app.db, self.name, self.models)
         self.security = self.add_security(app, app.db)
 
+        @app.teardown_appcontext
+        def shutdown_session(exception=None):
+            """ Without this, SQLAlchemy pooling errors start to occur
+                due to flask-security's usage of the database in tracking
+                users. """
+            app.db.session.remove()
+
         # Add stuff to flask-security templates that is needed by flask-admin
         @self.security.context_processor
         def security_context_processor():
@@ -67,16 +74,19 @@ class SecureAdminBlueprint(Blueprint):
         load_master_template(app)
 
     def add_admin(self, app, db, name, models):
+
         # Add an admin at the /admin route,
         # with a CRUD view for users
         admin = Admin(app, name=name, template_mode='bootstrap3',
                             index_view=SecureAdminIndex())
-        # Add a view for users, and for each other model specified
-        models.append('users')
+
+        # Add auth views, and for each additional model specified
+        models.extend(['users', 'roles'])
         for model_name in models:
             model = getattr(db, model_name)
             model = override___name___on_sqlsoup_model(model)
             admin.add_view(SecureModelView(model, db.session))
+
         return admin
 
     def add_security(self, app, db):

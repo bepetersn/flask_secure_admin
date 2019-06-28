@@ -4,9 +4,8 @@ from funcy import collecting
 from flask_security import SQLAlchemyUserDatastore, RoleMixin, UserMixin
 
 def _wrap_user(user):
-    if user is None: return None
-    user = _extend_instance(user, UserMixin)
-    return user
+    return None if user is None else \
+        _extend_instance(user, UserMixin)
 
 def _extend_instance(obj, cls):
     """Apply mixins to a class instance after creation """
@@ -22,7 +21,7 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
         # You can query directly on the model with sqlsoup
         user_model.query = user_model
         role_model.query = role_model
-        # define relationships between these models
+        # define relationship between these models
         user_model.relate('roles', role_model, secondary=db.users_roles._table)
         SQLAlchemyUserDatastore.__init__(self, db, user_model, role_model)
 
@@ -44,6 +43,6 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
 
     def find_role(self, role):
         return _extend_instance(
-            SQLAlchemyUserDatastore.find_user(self, role),
+            SQLAlchemyUserDatastore.find_role(self, role),
             RoleMixin
         )

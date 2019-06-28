@@ -10,7 +10,7 @@
 
     {% block logout %}
       {% if current_user.is_authenticated %}
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="/logout?next=/admin">Logout</a></li>
       {% endif %}
     {% endblock %}
 
