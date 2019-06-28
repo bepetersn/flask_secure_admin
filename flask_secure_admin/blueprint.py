@@ -1,5 +1,7 @@
 
 import os, inspect
+from itertools import zip_longest
+
 from flask import Flask, request, url_for, abort, Blueprint
 from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, AdminIndexView, expose
@@ -27,11 +29,16 @@ class SecureAdminBlueprint(Blueprint):
         table exists. SQLSoup reference to this database should
         be set on app, as explained in `register`. """
 
-    def __init__(self, name=None, models=None):
+    DEFAULT_MODELS = ['users', 'roles']
+
+    def __init__(self, name=None, models=None, view_options=None):
         self.name = name
-        self.models = models
+        self.models = set(models)
+        self.models.update(set(self.DEFAULT_MODELS))
+        self.view_options = view_options
         self.admin = None
         self.security = None
+
         super(SecureAdminBlueprint, self).__init__(
             self.name, __name__, template_folder='templates')
 
@@ -52,7 +59,7 @@ class SecureAdminBlueprint(Blueprint):
         app.config['SECURITY_PASSWORD_SALT'] = os.environ['SECURITY_PASSWORD_SALT']
         app.config['SECURITY_REGISTERABLE'] = False
 
-        self.admin = self.add_admin(app, app.db, self.name, self.models)
+        self.admin = self.add_admin(app, app.db)
         self.security = self.add_security(app, app.db)
 
         @app.teardown_appcontext
@@ -73,19 +80,22 @@ class SecureAdminBlueprint(Blueprint):
             )
         load_master_template(app)
 
-    def add_admin(self, app, db, name, models):
+    def add_admin(self, app, db):
 
         # Add an admin at the /admin route,
         # with a CRUD view for users
-        admin = Admin(app, name=name, template_mode='bootstrap3',
+        admin = Admin(app, name=self.name, template_mode='bootstrap3',
                             index_view=SecureAdminIndex())
 
         # Add auth views, and for each additional model specified
-        models.extend(['users', 'roles'])
-        for model_name in models:
+        for model_name, view_options_bag in zip_longest(
+                self.models, self.view_options, fillvalue={}):
             model = getattr(db, model_name)
             model = override___name___on_sqlsoup_model(model)
-            admin.add_view(SecureModelView(model, db.session))
+            model_view = SecureModelView(model, db.session)
+            for option_key, option_value in view_options_bag.items():
+                setattr(model_view, option_key, option_value)
+            admin.add_view(model_view)
 
         return admin
 
