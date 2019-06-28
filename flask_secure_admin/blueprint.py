@@ -33,8 +33,8 @@ class SecureAdminBlueprint(Blueprint):
 
     def __init__(self, name=None, models=None, view_options=None):
         self.name = name
-        self.models = set(models)
-        self.models.update(set(self.DEFAULT_MODELS))
+        self.models = models
+        self.models.extend(self.DEFAULT_MODELS)
         self.view_options = view_options
         self.admin = None
         self.security = None
