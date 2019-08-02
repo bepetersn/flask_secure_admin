@@ -6,7 +6,7 @@ My little bundling of flask-admin and flask-security. Drawn heavily from the fla
 
 ### Uploading the package
 
-```python
+```bash
 # Update setup.py version number
 python setup.py sdist
 twine upload dist/flask_secure_admin-x.x.x.tar.gz # use the last version created
