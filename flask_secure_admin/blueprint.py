@@ -108,7 +108,9 @@ class SecureAdminBlueprint(Blueprint):
         admin = Admin(app, name=self.name, template_mode='bootstrap3',
                             index_view=SecureAdminIndex())
 
-        # define relationship between these models
+        # Define relationship between these models;
+        # this must happen before adding the model views
+        # or the relationship won't be acknowledged
         db.users.relate('roles', db.roles,
                         secondary=db.users_roles._table)
 
