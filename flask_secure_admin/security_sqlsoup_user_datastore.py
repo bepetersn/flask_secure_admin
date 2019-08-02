@@ -21,8 +21,6 @@ class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
         # You can query directly on the model with sqlsoup
         user_model.query = user_model
         role_model.query = role_model
-        # define relationship between these models
-        user_model.relate('roles', role_model, secondary=db.users_roles._table)
         SQLAlchemyUserDatastore.__init__(self, db, user_model, role_model)
 
     def put(self, model):

@@ -40,6 +40,7 @@ class SecureAdminBlueprint(Blueprint):
         """
 
     DEFAULT_MODELS = ['users', 'roles']
+    DEFAULT_VIEW_OPTIONS = []
 
     def __init__(self, name=None, models=None, view_options=None):
         self.name = name
@@ -47,6 +48,7 @@ class SecureAdminBlueprint(Blueprint):
         self.models = models or []
         self.models.extend(self.DEFAULT_MODELS)
         self.view_options = view_options or []
+        self.view_options.extend(self.DEFAULT_VIEW_OPTIONS)
         # Initialize the below as a best practice,
         # so they can be referenced before assignment
         self.admin = None
@@ -99,6 +101,10 @@ class SecureAdminBlueprint(Blueprint):
         # with a CRUD view for users
         admin = Admin(app, name=self.name, template_mode='bootstrap3',
                             index_view=SecureAdminIndex())
+
+        # define relationship between these models
+        db.users.relate('roles', db.roles,
+                        secondary=db.users_roles._table)
 
         # Add auth views, and for each additional model specified
         # get the model from the database which must be set on app.
