@@ -1,15 +1,22 @@
 
-from flask import request, abort, redirect, url_for
+from flask import request, abort, redirect, url_for, current_app
 from flask_admin.contrib import sqla
 from flask_security import current_user
 
 # Create customized model view class
 class SecureModelView(sqla.ModelView):
+
+    def __str__(self):
+        return f"<'{self.name}' ModelView>"
+
     def is_accessible(self):
-        return (current_user.is_active and
+        if (current_user.is_active and
                 current_user.is_authenticated and
-                current_user.has_role('superuser')
-        )
+                current_user.has_role('superuser')):
+                return True
+        else:
+            current_app.logger.info(f'User {current_user} unauthorized to access {self}')
+            return False
 
     def _handle_view(self, name, **kwargs):
         """
