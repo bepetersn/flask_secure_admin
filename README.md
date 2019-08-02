@@ -6,7 +6,7 @@ My little bundling of flask-admin and flask-security. Drawn heavily from the fla
 
 ### Uploading the package
 
-```bash
+```sh
 # Update setup.py version number
 python setup.py sdist
 twine upload dist/flask_secure_admin-x.x.x.tar.gz # use the last version created
@@ -35,8 +35,4 @@ This will create the tables: users, roles, & users_roles, so if you have any of 
 In that case, you're probably best off making sure you have each of the fields required on users and roles.
 See the create.sql file for reference.
 
-At this point, the only thing left to do is set the password of the admin user the above script will have
-created for you. See the bottom of the create.sql file.
-
-And you're set! Run your app, there should now be a protected /admin route
-
+At this point, you're set! Run your app, there should now be a protected '/admin' route.

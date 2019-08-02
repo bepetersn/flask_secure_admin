@@ -1,5 +1,5 @@
 
-import os, inspect
+import os, re, subprocess
 from itertools import zip_longest
 
 from flask import Flask, request, url_for, abort, Blueprint
@@ -10,7 +10,7 @@ from .secure_model_view import SecureModelView
 from .security_sqlsoup_user_datastore import SQLSoupUserDataStore
 from .str_representation import override___name___on_sqlsoup_model
 from .templates import load_master_template
-from .utils import encrypt_password
+from .utils import encrypt_password, create_initial_admin_user
 
 # Inspired by:
 # https://flask-admin.readthedocs.io/en/latest/introduction/#using-flask-security
@@ -82,6 +82,19 @@ class SecureAdminBlueprint(Blueprint):
 
         self.admin = self.add_admin(app, app.db)
         self.security = self.add_security(app, app.db)
+
+        # TODO: This only works if the psql command is available
+        database_name = app.db._metadata._bind.url.database
+        completed = subprocess.run(
+            ['psql', database_name, '-c', "select * from users;"],
+            capture_output=True)
+        if re.search('\(0 rows\)', str(completed.stdout)):
+            print('Detected first usage of admin.')
+            print('Creating initial admin user...')
+            create_initial_admin_user(app)
+            print('You can now login with the credentials: \n'
+                  'user: admin@example.com, password: password')
+            print('Have fun!')
 
         @app.teardown_appcontext
         def shutdown_session(exception=None):

@@ -67,19 +67,3 @@ ALTER TABLE ONLY public.users_roles
     ADD CONSTRAINT users_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 ALTER TABLE ONLY public.users_roles
     ADD CONSTRAINT users_roles_pkey PRIMARY KEY (id);
-
--- Create some initial data
-insert into users values (1, 'admin@example.com', '$pbkdf2-sha512$25000$4dw7h5DyPmcsZYyx1to7Rw$Riy7WwlBQJvG3gABgVVue61uRhQMyFZ8m8g7U/ZFPtvsgu6HtmbfLoUtN95Up98BbNZjFj6c57o7LHvQHc47iQ', true, now());
-insert into roles values (1, 'superuser', 'someone who can do anything');
-insert into users_roles values (1, 1, 1);
-
--- Note: password will need to be overriden manually, e.g.:
-
--- from flask_secure_admin.utils import encrypt_password
--- from app import app
--- with app.app_context():
---    encrypt_password('password')
-
--- And then:
-
--- UPDATE users set password = 'result';
