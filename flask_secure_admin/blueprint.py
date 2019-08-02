@@ -25,17 +25,30 @@ class SecureAdminIndex(AdminIndexView):
 
 class SecureAdminBlueprint(Blueprint):
 
-    """ Requires that a database with the 'users' and 'roles'
-        table exists. SQLSoup reference to this database should
-        be set on app, as explained in `register`. """
+    """ Requires that a database with the 'users', 'roles', and
+        'users_roles' tables exist. SQLSoup reference to this
+        database should be set on app, as explained in `register`.
+        There is a create.sql file present which can initialize
+        these tables for you in a database of your creating.
+
+        Additionally, the environment variables SECRET_KEY and
+        SECURITY_PASSWORD_SALT must be set. There are additional
+        SECURITY environment variables which may be overrided.
+
+        Finally, at least a name must be passed in to initialize
+        the blueprint.
+        """
 
     DEFAULT_MODELS = ['users', 'roles']
 
     def __init__(self, name=None, models=None, view_options=None):
         self.name = name
-        self.models = models
+        assert self.name, "Admin instances must have a name value"
+        self.models = models or []
         self.models.extend(self.DEFAULT_MODELS)
-        self.view_options = view_options
+        self.view_options = view_options or []
+        # Initialize the below as a best practice,
+        # so they can be referenced before assignment
         self.admin = None
         self.security = None
 
@@ -47,17 +60,17 @@ class SecureAdminBlueprint(Blueprint):
             We could easily support a regular SQLAlchemy db as well, but
             this is all we have for now. """
 
-        if self.name is None or self.models is None:
-            assert False, "Set a name and models value before registering"
-
         # Secret key must be set in the environment.
         app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
         # Set config values for Flask-Security.
         # Security passowrd salt must be set in the environment.
-        app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
-        app.config['SECURITY_PASSWORD_SALT'] = os.environ['SECURITY_PASSWORD_SALT']
-        app.config['SECURITY_REGISTERABLE'] = False
+        app.config['SECURITY_PASSWORD_HASH'] = \
+            os.environ.get('SECURITY_PASSWORD_HASH', 'pbkdf2_sha512')
+        app.config['SECURITY_PASSWORD_SALT'] = \
+            os.environ['SECURITY_PASSWORD_SALT']
+        app.config['SECURITY_REGISTERABLE'] = \
+            os.environ.get('SECURITY_REGISTERABLE', False)
 
         self.admin = self.add_admin(app, app.db)
         self.security = self.add_security(app, app.db)
@@ -88,6 +101,7 @@ class SecureAdminBlueprint(Blueprint):
                             index_view=SecureAdminIndex())
 
         # Add auth views, and for each additional model specified
+        # get the model from the database which must be set on app.
         for model_name, view_options_bag in zip_longest(
                 self.models, self.view_options, fillvalue={}):
             model = getattr(db, model_name)

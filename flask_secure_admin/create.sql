@@ -1,7 +1,7 @@
 
 CREATE TABLE public.roles (
     id integer NOT NULL,
-    name character varying(80),
+    name character varying(80) NOT NULL,
     description character varying(255)
 );
 
@@ -15,7 +15,7 @@ CREATE SEQUENCE public.roles_id_seq
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    email character varying(255),
+    email character varying(255) NOT NULL,
     password character varying(255),
     active boolean,
     confirmed_at timestamp without time zone
@@ -31,15 +31,25 @@ CREATE SEQUENCE public.users_id_seq
 
 CREATE TABLE public.users_roles (
     id integer NOT NULL,
-    user_id integer,
-    role_id integer
+    user_id integer NOT NULL,
+    role_id integer NOT NULL
 );
+
+CREATE SEQUENCE public.users_roles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+ALTER TABLE ONLY public.users_roles ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 SELECT pg_catalog.setval('public.roles_id_seq', 1, false);
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+SELECT pg_catalog.setval('public.users_roles_id_seq', 1, false);
 
 ALTER TABLE ONLY public.roles
     ADD CONSTRAINT roles_name_key UNIQUE (name);
@@ -58,6 +68,18 @@ ALTER TABLE ONLY public.users_roles
 ALTER TABLE ONLY public.users_roles
     ADD CONSTRAINT users_roles_pkey PRIMARY KEY (id);
 
+-- Create some initial data
 insert into users values (1, 'admin@example.com', '$pbkdf2-sha512$25000$4dw7h5DyPmcsZYyx1to7Rw$Riy7WwlBQJvG3gABgVVue61uRhQMyFZ8m8g7U/ZFPtvsgu6HtmbfLoUtN95Up98BbNZjFj6c57o7LHvQHc47iQ', true, now());
 insert into roles values (1, 'superuser', 'someone who can do anything');
-insert into users_roles values (1, 1);
+insert into users_roles values (1, 1, 1);
+
+-- Note: password will need to be overriden manually, e.g.:
+
+-- from flask_secure_admin.utils import encrypt_password
+-- from app import app
+-- with app.app_context():
+--    encrypt_password('password')
+
+-- And then:
+
+-- UPDATE users set password = 'result';
