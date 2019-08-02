@@ -10,10 +10,14 @@ from .secure_model_view import SecureModelView
 from .security_sqlsoup_user_datastore import SQLSoupUserDataStore
 from .str_representation import override___name___on_sqlsoup_model
 from .templates import load_master_template
+from .utils import encrypt_password
 
 # Inspired by:
 # https://flask-admin.readthedocs.io/en/latest/introduction/#using-flask-security
 
+
+def on_user_change(form, model, is_created):
+    model.password = encrypt_password(model.password)
 
 class SecureAdminIndex(AdminIndexView):
     @expose('/')
@@ -40,7 +44,9 @@ class SecureAdminBlueprint(Blueprint):
         """
 
     DEFAULT_MODELS = ['users', 'roles']
-    DEFAULT_VIEW_OPTIONS = []
+    DEFAULT_VIEW_OPTIONS = [
+        dict(on_model_change=on_user_change)
+    ]
 
     def __init__(self, name=None, models=None, view_options=None):
         self.name = name
