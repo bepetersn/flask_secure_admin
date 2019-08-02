@@ -6,9 +6,11 @@ My little bundling of flask-admin and flask-security. Drawn heavily from the fla
 
 ### Uploading the package
 
-    # Update setup.py version number
-    python setup.py sdist
-    twine upload dist/flask_secure_admin-x.x.x.tar.gz # use the last version created
+```python
+# Update setup.py version number
+python setup.py sdist
+twine upload dist/flask_secure_admin-x.x.x.tar.gz # use the last version created
+```
 
 ## Usage
 
@@ -18,18 +20,23 @@ Run the following from a virtual environment:
 
 Add the following python to your project:
 
-    from flask_secure_admin import SecureAdminBlueprint
-    app.db = SQLSoup(os.environ['DATABASE_URI'])
-    app.register_blueprint(SecureAdminBlueprint(name='Your Project Name'))
+```python
+from flask_secure_admin import SecureAdminBlueprint
+app.db = SQLSoup(os.environ['DATABASE_URI'])
+app.register_blueprint(SecureAdminBlueprint(name='Your Project Name'))
+```
 
 Last, Run this to create necessary database tables in your database (PostgreSQL):
 
-    # Turns into, for example: psql yourdatabase < /Users/you/.local/share/virtualenvs/env-aP3G_9r-/lib/python3.7/site-packages/flask_secure_admin/create.sql
+    // Turns into, for example: psql yourdatabase < /Users/you/.local/share/virtualenvs/env-aP3G_9r-/lib/python3.7/site-packages/flask_secure_admin/create.sql
     psql yourdatabase < $(dirname $(which pip))/../lib/$(python --version | sed 's/..$//' | sed 's/ //' | awk '{print tolower($0)}')/site-packages/flask_secure_admin/create.sql;    
 
 This will create the tables: users, roles, & users_roles, so if you have any of those, this won't work.
 In that case, you're probably best off making sure you have each of the fields required on users and roles.
 See the create.sql file for reference.
+
+At this point, the only thing left to do is set the password of the admin user the above script will have
+created for you. See the bottom of the create.sql file.
 
 And you're set! Run your app, there should now be a protected /admin route
 
