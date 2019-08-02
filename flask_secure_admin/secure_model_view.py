@@ -15,7 +15,9 @@ class SecureModelView(sqla.ModelView):
                 current_user.has_role('superuser')):
                 return True
         else:
-            current_app.logger.info(f'User {current_user} unauthorized to access {self}')
+            current_app.logger.info(
+                f"<User '{current_user.email}'> unauthorized to "
+                f'access {self}, not showing')
             return False
 
     def _handle_view(self, name, **kwargs):
