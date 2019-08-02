@@ -15,8 +15,11 @@ class SecureModelView(sqla.ModelView):
                 current_user.has_role('superuser')):
                 return True
         else:
+            user_ref = 'AnonymousUser' if \
+                       current_user.is_anonymous else \
+                       current_user.email
             current_app.logger.info(
-                f"<User '{current_user.email}'> unauthorized to "
+                f"<User '{user_ref}'> unauthorized to "
                 f'access {self}, not showing')
             return False
 
