@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
+
+.navbar-default ul.navbar-nav > li > a {
+	border-radius: 5px;
+	padding: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-left: 10px;
+	font-size: 1.1em;
+}
+
+.navbar-default ul.navbar-nav > li.active > a {
+	background-image: none;
+	background-color: #007bff;
+	color: white;
+	color: white;
+    border: none;
+    box-shadow: none;
+}
+
+.navbar-default ul.navbar-nav {
+	margin-top: 12px;
+}
+
+.navbar-brand, .navbar-nav>li>a {
+	text-shadow: none;
+
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover{
+    background-image: none;
+    background-color: #007bff;
+    color: white;
+}
+
+.navbar-brand{
+	pointer-events: none;
+	cursor: default;
+}
+
+a{
+ color: #007bff;
+}
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
+    background-color: #eee;
+    border-color:  #007bff;
+    background-color: #007bff;
+    color: white;
+}
+
+.navbar-default{
+	background-image: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+        margin-bottom: 75px;
+    margin-top: 50px;
+}
+
+.navbar-default .navbar-brand {
+    /* color: #777; */
+    color: #007bff;
+    font-size: 3em;
+    font-weight: 600;
+}
+
+.well{
+	background-image: none;
+    border: none;
+    box-shadow: none;
+    background-color: #f1f1f1;
+}
+
+.form-control{
+	box-shadow: none;
+	border: none;
+}
+
+.form-control:focus{
+	outline: none;
+	box-shadow: none;
+	border: solid 1px #007bff;
+}
+
+.container{
+	font-family: "Roboto";
+}
+
+ html input[type=button], input[type=reset], input[type=submit], .applyBtn {
+    -webkit-appearance: button;
+    cursor: pointer;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.btn-primary:focus, .btn-primary:hover, .btn-default:hover, .applyBtn:hover{
+   background-color: #007bff;
+   border: none;
+   box-shadow: none;
+   text-shadow: none;
+   color: white;
+}
+
+.btn-danger, .btn-danger:hover, .cancelBtn{
+	background-image: none !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+	border: none !important;
+	background-color: #ff3547 !important;
+	color: white !important;
+}
+
+@media (min-width: 768px){
+
+	.navbar, .alert-info {
+	    /*margin-left: 16.66666667%;*/
+	    /*width: 66.66666667%;*/
+	}
+
+}
+
+.alert-info {
+    background-image: none;
+    border: none;
+    box-shadow: none;
+    color: #333;
+    text-shadow: none;
+    background-color: #f1f1f1;
+}
+
+.table-responsive, .admin-form, div.container > .admin-form {
+    border-right: solid 1px gainsboro;
+    border-bottom: solid 1px gainsboro;
+     border-left: solid 1px gainsboro; 
+    border-radius: 3px;
+    margin-top: 0;
+}
+
+.navbar-default ul.navbar-nav > li > a {
+    border-radius: 5px;
+    padding: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 10px;
+    font-size: 1.1em;
+    font-weight: 300;
+}
+
+.navbar-default .navbar-brand {
+    margin-right: 150px;
+}
+
+.navbar{
+	display: flex;
+}
+
+ .navbar-header{
+  width: 100%;
+ }
+
+ .navbar-default .navbar-brand {
+    width: 100%;
+}
+
+.navbar-collapse{
+	width: 100%;
+}
+
+.navbar-default ul.navbar-nav {
+    margin-top: 12px;
+    /* white-space: unset; */
+    /* word-break: break-all; */
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.table-responsive, .admin-form, div.container > .admin-form {
+    border-right: solid 1px gainsboro;
+    border-bottom: solid 1px gainsboro;
+    border-left: solid 1px gainsboro;
+    border-radius: 3px;
+    margin-top: 0;
+    background: #f1f1f1;
+    padding-top: 50px;
+    padding-right: 50px;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+    background-color: #f1f1f1;
+}
+.select2-container .select2-choice, .select2-container .select2-choices, .select2-container .select2-choices .select2-search-field input {
+    background: #fff;
+    padding: 0;
+    border: none !important;
+    border-color: none;
+    border-radius: 4px;
+    color: #555;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: none !important;
+    	font-family: 'Roboto' !important;
+}
+
+.select2-results .select2-highlighted {
+    background: #007bff !important;
+    border-radius: 3px !important;
+    	font-family: 'Roboto' !important;
+}
+
+.select2-drop-active, .select2-drop{
+	border: none !important;
+		font-family: 'Roboto' !important;
+}
+
+.select2-container-multi .select2-choices .select2-search-choice {
+	font-family: 'Roboto' !important;
+    color: #007bff !important;
+    background: #fff !important;
+    border-color: #007bff !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border-radius: 5px !important;
+}
+
+.table{
+	    background: white;
+}
+
+.daterangepicker, .daterangepicker td, .daterangepicker th, .daterangepicker div, .daterangepicker table, .daterangepicker select, .daterangepicker span, .daterangepicker input, .daterangepicker label{
+	font-family: 'Roboto' !important;
+}
+
+.daterangepicker td.today.active, .daterangepicker td.active, .daterangepicker td.active:hover {
+    background-color: #007bff !important;
+    border-color: #3071a9;
+    color: #fff;
+}
+
+.daterangepicker select{
+	    background: white !important;
+	    border: solid 1px #f1f1f1 !important;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #333;
+}
+
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #333;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+    background-color: #f1f1f1;
+}
+
+a:focus, a:hover {
+    color: #007bff;
+    text-decoration: none;
+}
+
+table .glyphicon{
+	color: #007bff;
+}
+
+form input[type="checkbox"]{
+	width: 3%;
+}
