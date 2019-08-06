@@ -10,29 +10,14 @@ from .secure_model_view import SecureModelView
 from .security_sqlsoup_user_datastore import SQLSoupUserDataStore
 from .str_representation import override___name___on_sqlsoup_model
 from .templates import load_master_template
+from .index import SecureDefaultIndex
 from .utils import encrypt_password, create_initial_admin_user
 
 # Inspired by:
 # https://flask-admin.readthedocs.io/en/latest/introduction/#using-flask-security
 
-
 def on_user_change(form, model, is_created):
     model.password = encrypt_password(model.password)
-
-class SecureAdminIndex(AdminIndexView):
-
-    def __init__(self, index_url):
-        self.index_url = index_url
-        super(SecureAdminIndex, self).__init__()
-
-    @expose('/')
-    @login_required
-    def index(self):
-        """ Default index, login is required. """
-        if self.index_url:
-            return redirect(self.index_url)
-        else:
-            return self.render('admin/index.html')
 
 
 class SecureAdminBlueprint(Blueprint):
@@ -64,7 +49,7 @@ class SecureAdminBlueprint(Blueprint):
         self.models.extend(self.DEFAULT_MODELS)
         self.view_options = view_options or []
         self.view_options.extend(self.DEFAULT_VIEW_OPTIONS)
-        self.index_url = index_url
+
         # Initialize the below as a best practice,
         # so they can be referenced before assignment
         self.admin = None
@@ -124,12 +109,15 @@ class SecureAdminBlueprint(Blueprint):
             )
         load_master_template(app)
 
+    def get_index_view(self):
+        return SecureDefaultIndex()
+
     def add_admin(self, app, db):
 
         # Add an admin at the /admin route,
         # with a CRUD view for users
         admin = Admin(app, name=self.name, template_mode='bootstrap3',
-                            index_view=SecureAdminIndex(self.index_url))
+                            index_view=self.get_index_view())
 
         # Define relationship between these models;
         # this must happen before adding the model views
