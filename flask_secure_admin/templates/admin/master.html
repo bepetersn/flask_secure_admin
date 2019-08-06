@@ -1,19 +1,28 @@
 {% extends 'admin/base.html' %}
 
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('secure_admin.static', filename='admin.css') }}">
+{% endblock %}
+
 {% block main_menu %}
-  <ul class="nav navbar-nav">
-    {% block inner_nav %}
+<ul class="nav navbar-nav">
+  {% block inner_nav %}
 
-    {% block default_layout %}
-      {{ layout.menu() }}
-    {% endblock %}
+  {% block default_layout %}
+  {{ layout.menu() }}
+  {% endblock %}
 
-    {% block logout %}
-      {% if current_user.is_authenticated %}
-        <li><a href="/logout?next=/admin">Logout</a></li>
-      {% endif %}
-    {% endblock %}
+  {% block logout %}
+  {% if current_user.is_authenticated %}
+  <li>
+    <a href="/logout?next=/admin">
+      <span class="glyphicon glyphicon-log-out"></span>
+      Logout
+    </a></li>
+  {% endif %}
+  {% endblock %}
 
-    {% endblock %}
-  </ul>
+  {% endblock %}
+</ul>
 {% endblock %}

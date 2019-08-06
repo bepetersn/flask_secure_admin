@@ -42,9 +42,10 @@ class SecureAdminBlueprint(Blueprint):
     ]
 
     def __init__(self, name=None, models=None,
-                 view_options=None, index_url=None):
-        self.name = name
-        assert self.name, "Admin instances must have a name value"
+                 view_options=None, index_url=None,
+                 *args, **kwargs):
+        self.app_name = name
+        assert self.app_name, "Admin instances must have a name value"
         self.models = models or []
         self.models.extend(self.DEFAULT_MODELS)
         self.view_options = view_options or []
@@ -56,7 +57,9 @@ class SecureAdminBlueprint(Blueprint):
         self.security = None
 
         super(SecureAdminBlueprint, self).__init__(
-            self.name, __name__, template_folder='templates')
+            'secure_admin', __name__, template_folder='templates',
+            static_folder='static', static_url_path='/static',
+            *args, **kwargs)
 
     def register(self, app, options, first_registration=False):
         """ `app` should have a SQLSoup database set as its `db` attribute.
@@ -108,6 +111,8 @@ class SecureAdminBlueprint(Blueprint):
                 get_url=url_for
             )
         load_master_template(app)
+        super(SecureAdminBlueprint, self).register(
+            app, options, first_registration)
 
     def get_index_view(self):
         return SecureDefaultIndex()
@@ -116,7 +121,7 @@ class SecureAdminBlueprint(Blueprint):
 
         # Add an admin at the /admin route,
         # with a CRUD view for users
-        admin = Admin(app, name=self.name, template_mode='bootstrap3',
+        admin = Admin(app, name=self.app_name, template_mode='bootstrap3',
                             index_view=self.get_index_view())
 
         # Define relationship between these models;

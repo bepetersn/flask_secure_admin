@@ -19,3 +19,4 @@ def load_master_template(app):
     master_template = app_env.template_class.from_code(
         app_env, code, {}, uptodate)
     app_env.globals['secure_admin_master_template'] = master_template
+    
