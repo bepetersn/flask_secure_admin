@@ -2,7 +2,7 @@
 import os, re, subprocess
 from itertools import zip_longest
 
-from flask import Flask, request, url_for, abort, Blueprint
+from flask import Flask, request, url_for, abort, Blueprint, redirect
 from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, AdminIndexView, expose
 from flask_security import Security, login_required
@@ -20,11 +20,19 @@ def on_user_change(form, model, is_created):
     model.password = encrypt_password(model.password)
 
 class SecureAdminIndex(AdminIndexView):
+
+    def __init__(self, index_url):
+        self.index_url = index_url
+        super(SecureAdminIndex, self).__init__()
+
     @expose('/')
     @login_required
     def index(self):
         """ Default index, login is required. """
-        return self.render('admin/index.html')
+        if self.index_url:
+            return redirect(self.index_url)
+        else:
+            return self.render('admin/index.html')
 
 
 class SecureAdminBlueprint(Blueprint):
@@ -48,13 +56,15 @@ class SecureAdminBlueprint(Blueprint):
         dict(on_model_change=on_user_change)
     ]
 
-    def __init__(self, name=None, models=None, view_options=None):
+    def __init__(self, name=None, models=None,
+                 view_options=None, index_url=None):
         self.name = name
         assert self.name, "Admin instances must have a name value"
         self.models = models or []
         self.models.extend(self.DEFAULT_MODELS)
         self.view_options = view_options or []
         self.view_options.extend(self.DEFAULT_VIEW_OPTIONS)
+        self.index_url = index_url
         # Initialize the below as a best practice,
         # so they can be referenced before assignment
         self.admin = None
@@ -119,7 +129,7 @@ class SecureAdminBlueprint(Blueprint):
         # Add an admin at the /admin route,
         # with a CRUD view for users
         admin = Admin(app, name=self.name, template_mode='bootstrap3',
-                            index_view=SecureAdminIndex())
+                            index_view=SecureAdminIndex(self.index_url))
 
         # Define relationship between these models;
         # this must happen before adding the model views
