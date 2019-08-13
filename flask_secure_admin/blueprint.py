@@ -81,7 +81,7 @@ class SecureAdminBlueprint(Blueprint):
         self.admin = self.add_admin(app, app.db, options)
         self.security = self.add_security(app, app.db, options)
 
-        self.bootstrap_database(app, db)
+        self.bootstrap_database(app, app.db)
 
         @app.teardown_appcontext
         def shutdown_session(exception=None):
