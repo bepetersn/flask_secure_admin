@@ -81,18 +81,7 @@ class SecureAdminBlueprint(Blueprint):
         self.admin = self.add_admin(app, app.db, options)
         self.security = self.add_security(app, app.db, options)
 
-        # TODO: This only works if the psql command is available
-        database_name = app.db._metadata._bind.url.database
-        completed = subprocess.run(
-            ['psql', database_name, '-c', "select * from users;"],
-            capture_output=True)
-        if re.search('\(0 rows\)', str(completed.stdout)):
-            print('Detected first usage of admin.')
-            print('Creating initial admin user...')
-            create_initial_admin_user(app)
-            print('You can now login with the credentials: \n'
-                  'user: admin@example.com, password: password')
-            print('Have fun!')
+        self.bootstrap_database(app, db)
 
         @app.teardown_appcontext
         def shutdown_session(exception=None):
@@ -141,6 +130,27 @@ class SecureAdminBlueprint(Blueprint):
             for option_key, option_value in view_options_bag.items():
                 setattr(model_view, option_key, option_value)
             admin.add_view(model_view)
+
+    def bootstrap_database(self, app, db):
+        # TODO: This only works if the psql command is available
+        # and the database is a postgres database
+        try:
+            database_name = db._metadata._bind.url.database
+            completed = subprocess.run(
+                ['psql', database_name, '-c', "select * from users;"],
+                capture_output=True)
+            if re.search('\(0 rows\)', str(completed.stdout)):
+                print('Detected first usage of admin.')
+                print('Creating initial admin user...')
+                create_initial_admin_user(app)
+                print('You can now login with the credentials: \n'
+                      'user: admin@example.com, password: password')
+                print('Have fun!')
+        except Exception:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print('Failed to bootstrap database!')
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def add_admin(self, app, db, options):
 
