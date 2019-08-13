@@ -125,10 +125,22 @@ class SecureAdminBlueprint(Blueprint):
         return admin
 
     def on_after_add_layout_to_admin(self, admin, app, db, options):
-        """ Hook for adding more views, etc., to the admin object. 
-            If adding views is done in this method, they will appear 
+        """ Hook for adding more views, etc., to the admin object.
+            If adding views is done in this method, they will appear
             after the layout (on the right side of it). """
         return admin
+
+    def add_layout_to_admin(self, admin, app, db, options):
+        """ Add auth views, and for each additional model specified
+            get the model from the database which must be set on app. """
+        for model_name, view_options_bag in zip_longest(
+                self.models, self.view_options, fillvalue={}):
+            model = getattr(db, model_name)
+            model = override___name___on_sqlsoup_model(model)
+            model_view = SecureModelView(model, db.session)
+            for option_key, option_value in view_options_bag.items():
+                setattr(model_view, option_key, option_value)
+            admin.add_view(model_view)
 
     def add_admin(self, app, db, options):
 
@@ -144,18 +156,7 @@ class SecureAdminBlueprint(Blueprint):
                         secondary=db.users_roles._table)
 
         admin = self.on_before_add_layout_to_admin(admin, app, db, options)
-
-        # Add auth views, and for each additional model specified
-        # get the model from the database which must be set on app.
-        for model_name, view_options_bag in zip_longest(
-                self.models, self.view_options, fillvalue={}):
-            model = getattr(db, model_name)
-            model = override___name___on_sqlsoup_model(model)
-            model_view = SecureModelView(model, db.session)
-            for option_key, option_value in view_options_bag.items():
-                setattr(model_view, option_key, option_value)
-            admin.add_view(model_view)
-
+        admin = self.add_layout_to_admin(admin, app, db, options)
         admin = self.on_after_add_layout_to_admin(admin, app, db, options)
 
         return admin
