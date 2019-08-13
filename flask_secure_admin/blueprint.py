@@ -130,6 +130,7 @@ class SecureAdminBlueprint(Blueprint):
             for option_key, option_value in view_options_bag.items():
                 setattr(model_view, option_key, option_value)
             admin.add_view(model_view)
+        return admin
 
     def bootstrap_database(self, app, db):
         # TODO: This only works if the psql command is available
