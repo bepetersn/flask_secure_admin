@@ -119,6 +119,15 @@ class SecureAdminBlueprint(Blueprint):
         return SecureDefaultIndex()
 
     def on_before_add_layout_to_admin(self, admin, app, db, options):
+        """ Hook for adding more views, etc., to the admin object.
+            If adding views is done in this method, they will appear
+            prior to the layout (on the left side of it). """
+        return admin
+
+    def on_after_add_layout_to_admin(self, admin, app, db, options):
+        """ Hook for adding more views, etc., to the admin object. 
+            If adding views is done in this method, they will appear 
+            after the layout (on the right side of it). """
         return admin
 
     def add_admin(self, app, db, options):
@@ -146,6 +155,8 @@ class SecureAdminBlueprint(Blueprint):
             for option_key, option_value in view_options_bag.items():
                 setattr(model_view, option_key, option_value)
             admin.add_view(model_view)
+
+        admin = self.on_after_add_layout_to_admin(admin, app, db, options)
 
         return admin
 
