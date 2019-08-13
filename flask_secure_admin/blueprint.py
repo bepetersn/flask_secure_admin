@@ -136,9 +136,11 @@ class SecureAdminBlueprint(Blueprint):
         # and the database is a postgres database
         try:
             database_name = db._metadata._bind.url.database
-            completed = subprocess.run(
-                ['psql', database_name, '-c', "select * from users;"],
-                capture_output=True)
+            command_args = ['psql', database_name, '-c', "select * from users;"]
+            try:
+                completed = subprocess.run(command_args, capture_output=True)
+            except TypeError:
+                completed = subprocess.run(command_args, stdout=subprocess.PIPE)
             if re.search('\(0 rows\)', str(completed.stdout)):
                 print('Detected first usage of admin.')
                 print('Creating initial admin user...')
