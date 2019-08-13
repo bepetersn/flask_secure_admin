@@ -78,8 +78,8 @@ class SecureAdminBlueprint(Blueprint):
         app.config['SECURITY_REGISTERABLE'] = \
             os.environ.get('SECURITY_REGISTERABLE', False)
 
-        self.admin = self.add_admin(app, app.db)
-        self.security = self.add_security(app, app.db)
+        self.admin = self.add_admin(app, app.db, options)
+        self.security = self.add_security(app, app.db, options)
 
         # TODO: This only works if the psql command is available
         database_name = app.db._metadata._bind.url.database
@@ -115,9 +115,13 @@ class SecureAdminBlueprint(Blueprint):
             app, options, first_registration)
 
     def get_index_view(self):
+        """ Hook for overriding the admin's IndexView. """
         return SecureDefaultIndex()
 
-    def add_admin(self, app, db):
+    def on_before_add_layout_to_admin(self, admin, app, db, options):
+        return admin
+
+    def add_admin(self, app, db, options):
 
         # Add an admin at the /admin route,
         # with a CRUD view for users
@@ -129,6 +133,8 @@ class SecureAdminBlueprint(Blueprint):
         # or the relationship won't be acknowledged
         db.users.relate('roles', db.roles,
                         secondary=db.users_roles._table)
+
+        admin = self.on_before_add_layout_to_admin(admin, app, db, options)
 
         # Add auth views, and for each additional model specified
         # get the model from the database which must be set on app.
@@ -143,7 +149,7 @@ class SecureAdminBlueprint(Blueprint):
 
         return admin
 
-    def add_security(self, app, db):
+    def add_security(self, app, db, options):
         # Initialize flask-security
         user_datastore = SQLSoupUserDataStore(db, db.users, db.roles)
         return Security(app, user_datastore)
