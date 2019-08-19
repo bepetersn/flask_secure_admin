@@ -6,7 +6,7 @@ from flask_security import current_user
 # Create customized model view class
 class SecureModelView(sqla.ModelView):
 
-    def __str__(self):
+    def __repr__(self):
         return f"<'{self.name}' ModelView>"
 
     def is_accessible(self):
