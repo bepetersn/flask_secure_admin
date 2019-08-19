@@ -22,7 +22,7 @@ VERSION = '0.1.19'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'flask', 'flask_admin', 'flask_security', 'sqlalchemy', 'sqlsoup'
+    'flask', 'flask_admin==1.5.2', 'flask_security', 'sqlalchemy', 'sqlsoup'
 ]
 
 # What packages are optional?
