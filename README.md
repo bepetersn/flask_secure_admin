@@ -32,16 +32,16 @@ Add sqlsoup models to your admin view by passing a list of their names
 as a third argument to `SecureAdminBlueprint`, and a list of view options
 for customization of these model views as a fourth argument:
 ```python
-    app.register_blueprint(SecureAdminBlueprint(
-        name='Your Project Name',
-        url_prefix='secure-admin'
-        models=['videos', 'captions', 'languages'],
-        view_options=[
-            dict(
-                can_create=False,
-                form_overrides=dict(filename=FileUploadField)
-            )
-        ], {}, {}))
+app.register_blueprint(SecureAdminBlueprint(
+    name='Your Project Name',
+    url_prefix='secure-admin'
+    models=['videos', 'captions', 'languages'],
+    view_options=[
+        dict(
+            can_create=False,
+            form_overrides=dict(filename=FileUploadField)
+        )
+    ], {}, {}))
 ```
 
 See https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_sqla/#flask_admin.contrib.sqla.ModelView
