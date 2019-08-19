@@ -126,9 +126,11 @@ class SecureAdminBlueprint(Blueprint):
                 self.models, self.view_options, fillvalue={}):
             model = getattr(db, model_name)
             model = override___name___on_sqlsoup_model(model)
-            model_view = SecureModelView(model, db.session)
-            for option_key, option_value in view_options_bag.items():
-                setattr(model_view, option_key, option_value)
+            DerviedModelViewCls = \
+                type(f'Secure{model.__name__}View',
+                     (SecureModelView,),
+                     view_options_bag)
+            model_view = DerviedModelViewCls(model, db.session)
             admin.add_view(model_view)
         return admin
 
