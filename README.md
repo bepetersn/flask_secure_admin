@@ -31,7 +31,7 @@ app.register_blueprint(SecureAdminBlueprint(
 Add sqlsoup models to your admin view by passing a list of their names 
 as a third argument to `SecureAdminBlueprint`, and a list of view options
 for customization of these model views as a fourth argument:
-
+```python
     app.register_blueprint(SecureAdminBlueprint(
         name='Your Project Name',
         url_prefix='secure-admin'
@@ -42,6 +42,7 @@ for customization of these model views as a fourth argument:
                 form_overrides=dict(filename=FileUploadField)
             )
         ], {}, {}))
+```
 
 See https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_sqla/#flask_admin.contrib.sqla.ModelView
 and its parent class, https://flask-admin.readthedocs.io/en/latest/api/mod_model/#flask_admin.model.BaseModelView,
