@@ -23,10 +23,31 @@ Add the following python to your project:
 ```python
 from flask_secure_admin import SecureAdminBlueprint
 app.db = SQLSoup(os.environ['DATABASE_URI'])
-app.register_blueprint(SecureAdminBlueprint(name='Your Project Name'))
+app.register_blueprint(SecureAdminBlueprint(
+    name='Your Project Name',
+    url_prefix='secure-admin'))
 ```
 
-Last, Run this to create necessary database tables in your database (PostgreSQL):
+Add sqlsoup models to your admin view by passing a list of their names 
+as a third argument to `SecureAdminBlueprint`, and a list of view options
+for customization of these model views as a fourth argument:
+
+    app.register_blueprint(SecureAdminBlueprint(
+        name='Your Project Name',
+        url_prefix='secure-admin'
+        models=['videos', 'captions', 'languages'],
+        view_options=[
+            dict(
+                can_create=False,
+                form_overrides=dict(filename=FileUploadField)
+            )
+        ], {}, {}))
+
+See https://flask-admin.readthedocs.io/en/latest/api/mod_contrib_sqla/#flask_admin.contrib.sqla.ModelView
+and its parent class, https://flask-admin.readthedocs.io/en/latest/api/mod_model/#flask_admin.model.BaseModelView,
+for a list of all configuration options. 
+
+Last, run this to create necessary database tables in your database (PostgreSQL):
 
     // Turns into, for example: psql yourdatabase < /Users/you/.local/share/virtualenvs/env-aP3G_9r-/lib/python3.7/site-packages/flask_secure_admin/create.sql
     psql yourdatabase < $(dirname $(which pip))/../lib/$(python --version | sed 's/..$//' | sed 's/ //' | awk '{print tolower($0)}')/site-packages/flask_secure_admin/create.sql;    
