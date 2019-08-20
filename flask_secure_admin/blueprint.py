@@ -16,7 +16,7 @@ from .utils import encrypt_password, create_initial_admin_user
 # Inspired by:
 # https://flask-admin.readthedocs.io/en/latest/introduction/#using-flask-security
 
-def on_user_change(form, model, is_created):
+def on_user_change(view, form, model, is_created):
     model.password = encrypt_password(model.password)
 
 
@@ -38,7 +38,8 @@ class SecureAdminBlueprint(Blueprint):
 
     DEFAULT_MODELS = ['users', 'roles']
     DEFAULT_VIEW_OPTIONS = [
-        dict(on_model_change=on_user_change)
+        dict(on_model_change=on_user_change),
+        dict()
     ]
 
     def __init__(self, name=None, models=None,
