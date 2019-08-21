@@ -6,11 +6,10 @@ from flask import Flask, request, url_for, abort, Blueprint, redirect
 from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, AdminIndexView, expose
 from flask_security import Security, login_required
-from .secure_model_view import SecureModelView
-from .security_sqlsoup_user_datastore import SQLSoupUserDataStore
-from .str_representation import override___name___on_sqlsoup_model
+
+from .security import SecureModelView, SecureDefaultIndex
+from .contrib.sqlsoup import override___name___on_sqlsoup_model, SQLSoupUserDataStore
 from .templates import load_master_template
-from .index import SecureDefaultIndex
 from .utils import encrypt_password, create_initial_admin_user
 
 # Inspired by:

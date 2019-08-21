@@ -1,19 +1,12 @@
 
-# from flask import g
 from funcy import collecting
 from flask_security import SQLAlchemyUserDatastore, RoleMixin, UserMixin
+
+from .utils import _extend_instance
 
 def _wrap_user(user):
     return None if user is None else \
         _extend_instance(user, UserMixin)
-
-def _extend_instance(obj, cls):
-    """Apply mixins to a class instance after creation """
-    base_cls = obj.__class__
-    base_cls_name = obj.__class__.__name__
-    obj.__class__ = type(base_cls_name, (base_cls, cls), {})
-    return obj
-
 
 class SQLSoupUserDataStore(SQLAlchemyUserDatastore):
 

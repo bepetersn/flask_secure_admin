@@ -3,6 +3,8 @@ from flask import request, abort, redirect, url_for, current_app
 from flask_admin.contrib import sqla
 from flask_security import current_user
 
+from .data import SUPER_ROLE
+
 # Create customized model view class
 class SecureModelView(sqla.ModelView):
 
@@ -12,7 +14,7 @@ class SecureModelView(sqla.ModelView):
     def is_accessible(self):
         if (current_user.is_active and
                 current_user.is_authenticated and
-                current_user.has_role('superuser')):
+                current_user.has_role(SUPER_ROLE)):
                 return True
         else:
             user_ref = 'AnonymousUser' if \

@@ -1,0 +1,2 @@
+
+SUPER_ROLE = 'superuser'

@@ -1,3 +1,4 @@
 
-from .blueprint import SecureAdminBlueprint
-from .index import SecureRedirectIndex, SecureDefaultIndex
+from .base import SecureAdminBlueprint
+from .security import (SUPER_ROLE, SecureRedirectIndex, SecureDefaultIndex,
+                       SecureModelView)
