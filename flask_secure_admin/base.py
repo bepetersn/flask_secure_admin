@@ -7,7 +7,11 @@ from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, AdminIndexView, expose
 from flask_security import Security, login_required
 
-from .security import SecureModelView, SecureDefaultIndex
+from .security import (
+    SecureModelView, SecureDefaultIndex,
+    scaffold_list_columns_respecting_roles,
+    scaffold_form_respecting_roles, SUPER_ROLE
+)
 from .contrib.sqlsoup import override___name___on_sqlsoup_model, SQLSoupUserDataStore
 from .templates import load_master_template
 from .utils import encrypt_password, create_initial_admin_user
@@ -42,7 +46,7 @@ class SecureAdminBlueprint(Blueprint):
     ]
 
     def __init__(self, name=None, models=None,
-                 view_options=None, index_url=None,
+                 view_options=None, admin_roles_accepted=None,
                  *args, **kwargs):
         self.app_name = name
         assert self.app_name, "Admin instances must have a name value"
@@ -50,6 +54,7 @@ class SecureAdminBlueprint(Blueprint):
         self.models.extend(self.DEFAULT_MODELS)
         self.view_options = view_options or []
         self.view_options.extend(self.DEFAULT_VIEW_OPTIONS)
+        self.admin_roles_accepted = admin_roles_accepted or [SUPER_ROLE]
 
         # Initialize the below as a best practice,
         # so they can be referenced before assignment
@@ -122,10 +127,26 @@ class SecureAdminBlueprint(Blueprint):
     def add_layout_to_admin(self, admin, app, db, options):
         """ Add auth views, and for each additional model specified
             get the model from the database which must be set on app. """
+
         for model_name, view_options_bag in zip_longest(
                 self.models, self.view_options, fillvalue={}):
+
+            # Add default view options
+            if not view_options_bag.get('scaffold_list_columns'):
+                view_options_bag['scaffold_list_columns'] = \
+                    scaffold_list_columns_respecting_roles
+            if not view_options_bag.get('scaffold_form'):
+                view_options_bag['scaffold_form'] = \
+                    scaffold_form_respecting_roles
+            if not view_options_bag.get('role_only_columns'):
+                view_options_bag['role_only_columns'] = dict()
+            if not view_options_bag.get('roles_accepted'):
+                view_options_bag['roles_accepted'] = self.admin_roles_accepted
+
+            # TODO: SQLSoup-specific
             model = getattr(db, model_name)
             model = override___name___on_sqlsoup_model(model)
+
             DerviedModelViewCls = \
                 type(f'Secure{model.__name__}View',
                      (SecureModelView,),

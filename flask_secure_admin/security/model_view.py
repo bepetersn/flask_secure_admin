@@ -11,11 +11,22 @@ class SecureModelView(sqla.ModelView):
     def __repr__(self):
         return f"<'{self.name}' ModelView>"
 
+    def rebuild_views_respecting_access(self):
+        # Rebuild edit & list views based on who is accessing them
+        self._refresh_forms_cache()
+        self._list_columns = self.get_list_columns()
+
+    def has_one_accepted_role(self, user):
+        return any(
+            [current_user.has_role(r)
+             for r in self.roles_accepted])
+
     def is_accessible(self):
         if (current_user.is_active and
                 current_user.is_authenticated and
-                current_user.has_role(SUPER_ROLE)):
-                return True
+                self.has_one_accepted_role(current_user)):
+            self.rebuild_views_respecting_access()
+            return True
         else:
             user_ref = 'AnonymousUser' if \
                        current_user.is_anonymous else \
