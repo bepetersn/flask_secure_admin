@@ -26,7 +26,7 @@ def scaffold_form_respecting_roles(self):
     role_only_columns = self.role_only_columns or dict()
     super_only_columns = role_only_columns.get(SUPER_ROLE) or []
     if current_user and not current_user.has_role(SUPER_ROLE):
-        exclude.extend(role_only_columns)
+        exclude.extend(role_only_columns[SUPER_ROLE])
     converter = self.model_form_converter(self.session, self)
     form_class = get_sqla_form(self.model, converter,
                                base_class=self.form_base_class,
