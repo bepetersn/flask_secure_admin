@@ -45,9 +45,8 @@ class SecureAdminBlueprint(Blueprint):
         dict()
     ]
 
-    def __init__(self, name=None, models=None,
-                 view_options=None, admin_roles_accepted=None,
-                 *args, **kwargs):
+    def __init__(self, name=None, models=None, view_options=None,
+                 admin_roles_accepted=None, *args, **kwargs):
         self.app_name = name
         assert self.app_name, "Admin instances must have a name value"
         self.models = models or []
@@ -85,8 +84,8 @@ class SecureAdminBlueprint(Blueprint):
 
         self.admin = self.add_admin(app, app.db, options)
         self.security = self.add_security(app, app.db, options)
-
         self.bootstrap_database(app, app.db)
+
 
         @app.teardown_appcontext
         def shutdown_session(exception=None):
