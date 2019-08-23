@@ -146,11 +146,11 @@ class SecureAdminBlueprint(Blueprint):
             model = getattr(db, model_name)
             model = override___name___on_sqlsoup_model(model)
 
-            DerviedModelViewCls = \
+            DerivedModelViewCls = \
                 type(f'Secure{model.__name__}View',
                      (SecureModelView,),
                      view_options_bag)
-            model_view = DerviedModelViewCls(model, db.session)
+            model_view = DerivedModelViewCls(model, db.session)
             admin.add_view(model_view)
         return admin
 
