@@ -98,7 +98,7 @@ a{
     color: white !important;
 }
 
-.btn-primary:focus, .btn-primary:hover, .btn-default:hover, .applyBtn:hover{
+.btn-primary:focus, .btn-primary:hover, .applyBtn:hover{
    background-color: #007bff;
    border: none;
    box-shadow: none;
@@ -136,7 +136,7 @@ a{
 .table-responsive, .admin-form, div.container > .admin-form {
     border-right: solid 1px gainsboro;
     border-bottom: solid 1px gainsboro;
-     border-left: solid 1px gainsboro; 
+     border-left: solid 1px gainsboro;
     border-radius: 3px;
     margin-top: 0;
 }
