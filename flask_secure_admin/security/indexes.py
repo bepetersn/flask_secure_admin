@@ -17,6 +17,7 @@ class SecureRedirectIndex(AdminIndexView):
 
     def __init__(self, index_endpoint, *args, **kwargs):
         self.index_endpoint = index_endpoint
+        self.is_visible = lambda: False
         super(SecureRedirectIndex, self).__init__(*args, **kwargs)
 
     @expose('/')
@@ -27,7 +28,6 @@ class SecureRedirectIndex(AdminIndexView):
             is not the default value. """
         if self.index_endpoint and \
                 self.index_endpoint != DEFAULT_INDEX_ENDPOINT:
-            self.is_visible = lambda: False
             return redirect(url_for(self.index_endpoint, _external=True))
         else:
             return self.render(DEFAULT_INDEX_TEMPLATE)
