@@ -87,7 +87,7 @@ a{
 	font-family: "Roboto";
 }
 
- html input[type=button], input[type=reset], input[type=submit], .applyBtn {
+ html input[type=button], input[type=reset], input[type=submit], .applyBtn, .btn-primary {
     -webkit-appearance: button;
     cursor: pointer;
     background-image: none !important;
