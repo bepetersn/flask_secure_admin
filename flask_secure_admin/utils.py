@@ -7,7 +7,7 @@ def create_initial_admin_user(app):
         user = app.db.users.insert(**dict(
             id=1, email='admin@example.com',
             password=encrypt_password('password'),
-            is_active=True, confirmed_at=datetime.utcnow()))
+            active=True, confirmed_at=datetime.utcnow()))
         role = app.db.roles.insert(**dict(
             id=1, name='superuser', description='Someone who can do anything'
         ))
