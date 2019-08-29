@@ -19,7 +19,7 @@ URL = 'https://github.com/altec-dev/flask-secure-admin'
 EMAIL = 'bepetersondev@gmail.com'
 AUTHOR = 'Brian Peterson'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.1.26'
+VERSION = '0.2.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
