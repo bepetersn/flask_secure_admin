@@ -15,7 +15,7 @@ from setuptools import find_packages, setup, Command as UploadCommand
 # Package meta-data.
 NAME = 'flask_secure_admin'
 DESCRIPTION = 'A bundling of flask-security and flask-admin with a bit of integration.'
-URL = 'https://github.com/me/myproject'
+URL = 'https://github.com/altec-dev/flask-secure-admin'
 EMAIL = 'bepetersondev@gmail.com'
 AUTHOR = 'Brian Peterson'
 REQUIRES_PYTHON = '>=3.6.0'
