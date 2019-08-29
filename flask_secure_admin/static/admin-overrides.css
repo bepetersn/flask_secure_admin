@@ -72,7 +72,7 @@ a{
     background-color: #f1f1f1;
 }
 
-.form-control{
+.form-control:not(.filter-val) {
 	box-shadow: none;
 	border: none;
 }
