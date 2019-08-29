@@ -4,11 +4,11 @@ from itertools import zip_longest
 
 from flask import Flask, request, url_for, abort, Blueprint, redirect
 from flask_admin import Admin
-from flask_admin import helpers as admin_helpers, AdminIndexView, expose
+from flask_admin import helpers as admin_helpers, expose
 from flask_security import Security, login_required
 
 from .security import (
-    SecureModelView, SecureDefaultIndex,
+    SecureModelView, SecureRedirectIndex,
     scaffold_list_columns_respecting_roles,
     scaffold_form_respecting_roles, SUPER_ROLE
 )
@@ -109,7 +109,7 @@ class SecureAdminBlueprint(Blueprint):
 
     def get_index_view(self):
         """ Hook for overriding the admin's IndexView. """
-        return SecureDefaultIndex()
+        return SecureRedirectIndex()
 
     def on_before_add_layout_to_admin(self, admin, app, db, options):
         """ Hook for adding more views, etc., to the admin object.

@@ -1,9 +1,8 @@
 
-from flask import redirect, url_for
+from flask import redirect, url_for, current_app
 from flask_admin import AdminIndexView, expose
 from flask_security import login_required
 
-DEFAULT_INDEX_ENDPOINT = 'admin.index'
 DEFAULT_INDEX_TEMPLATE = 'admin/index.html'
 
 class SecureDefaultIndex(AdminIndexView):
@@ -15,19 +14,21 @@ class SecureDefaultIndex(AdminIndexView):
 
 class SecureRedirectIndex(AdminIndexView):
 
-    def __init__(self, index_endpoint, *args, **kwargs):
-        self.index_endpoint = index_endpoint
+    def __init__(self, *args, **kwargs):
         self.is_visible = lambda: False
         super(SecureRedirectIndex, self).__init__(*args, **kwargs)
 
     @expose('/')
     @login_required
     def index(self):
-        """ Allows redirecting to a sub-page as the index,
-            when a value is passed for index_endpoint which
-            is not the default value. """
-        if self.index_endpoint and \
-                self.index_endpoint != DEFAULT_INDEX_ENDPOINT:
-            return redirect(url_for(self.index_endpoint, _external=True))
+        """ Redirects to the first other view found. """
+        admin = current_app.extensions['admin'][0]
+        try:
+            first_view = admin._views[1]
+        except IndexError:
+            first_view = None
+        if first_view:
+            first_view_index = f'{first_view.endpoint}.index_view'
+            return redirect(url_for(first_view_index))
         else:
             return self.render(DEFAULT_INDEX_TEMPLATE)
