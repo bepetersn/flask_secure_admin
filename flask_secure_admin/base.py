@@ -6,6 +6,7 @@ from flask import Flask, request, url_for, abort, Blueprint, redirect
 from flask_admin import Admin
 from flask_admin import helpers as admin_helpers, expose
 from flask_security import Security, login_required
+from munch import Munch
 
 from .security import (
     SecureModelView, SecureRedirectIndex,
@@ -129,18 +130,19 @@ class SecureAdminBlueprint(Blueprint):
 
         for model_name, view_options_bag in zip_longest(
                 self.models, self.view_options, fillvalue={}):
+            view_options_bag = Munch(view_options_bag)
 
             # Add default view options
             if not view_options_bag.get('scaffold_list_columns'):
-                view_options_bag['scaffold_list_columns'] = \
+                view_options_bag.scaffold_list_columns = \
                     scaffold_list_columns_respecting_roles
             if not view_options_bag.get('scaffold_form'):
-                view_options_bag['scaffold_form'] = \
+                view_options_bag.scaffold_form = \
                     scaffold_form_respecting_roles
             if not view_options_bag.get('role_only_columns'):
-                view_options_bag['role_only_columns'] = dict()
+                view_options_bag.role_only_columns = dict()
             if not view_options_bag.get('roles_accepted'):
-                view_options_bag['roles_accepted'] = self.admin_roles_accepted
+                view_options_bag.roles_accepted = self.admin_roles_accepted
 
             # TODO: SQLSoup-specific
             model = getattr(db, model_name)
@@ -155,14 +157,15 @@ class SecureAdminBlueprint(Blueprint):
         return admin
 
     def bootstrap_database(self, app, db):
-        # TODO: This only works if the psql command is available
-        # and the database is a postgres database
+
         try:
             database_name = db._metadata._bind.url.database
+            # TODO: This only works if the psql command is available
+            # and the database is a postgres database
             command_args = ['psql', database_name, '-c', "select * from users;"]
             try:
                 completed = subprocess.run(command_args, capture_output=True)
-            except TypeError:
+            except TypeError: # Support py3.6
                 completed = subprocess.run(command_args, stdout=subprocess.PIPE)
             if re.search('\(0 rows\)', str(completed.stdout)):
                 print('Detected first usage of admin.')
@@ -172,7 +175,7 @@ class SecureAdminBlueprint(Blueprint):
                       'user: admin@example.com, password: password')
                 print('Have fun!')
         except Exception:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type, _, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print('Failed to bootstrap database!')
             print(exc_type, fname, exc_tb.tb_lineno)
@@ -198,5 +201,6 @@ class SecureAdminBlueprint(Blueprint):
 
     def add_security(self, app, db, options):
         # Initialize flask-security
+        # TODO: Also sqlsoup specific
         user_datastore = SQLSoupUserDataStore(db, db.users, db.roles)
         return Security(app, user_datastore)
